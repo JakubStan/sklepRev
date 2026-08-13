@@ -32,3 +32,8 @@ wp-cli.local.yml
 web/app/themes/sage/node_modules/
 web/app/themes/sage/public/
 web/app/themes/sage/vendor/
+
+
+# Wordfence
+web/app/wflogs/*
+!web/app/wflogs/.gitkeep
