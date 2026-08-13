@@ -1,0 +1,27 @@
+name: Test staging SSH
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-ssh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prepare SSH
+        run: |
+          mkdir -p ~/.ssh
+
+          printf '%s\n' "${{ secrets.STAGING_SSH_KEY }}" > ~/.ssh/staging_key
+          chmod 600 ~/.ssh/staging_key
+
+          ssh-keyscan -p "${{ secrets.STAGING_SSH_PORT }}" \
+            "${{ secrets.STAGING_SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Test SSH connection
+        run: |
+          ssh \
+            -i ~/.ssh/staging_key \
+            -p "${{ secrets.STAGING_SSH_PORT }}" \
+            "${{ secrets.STAGING_SSH_USER }}@${{ secrets.STAGING_SSH_HOST }}" \
+            'cd ~/staging && echo "SSH OK" && pwd && ls -la'
